@@ -5,7 +5,10 @@ class Phone {
   final String storage;
   final String ram;
   final int price;
-  bool isAvailable; // Optional: for the image of the phone
+  final int costPrice;
+  final int salePrice;
+  final String note;
+  bool isAvailable;
 
   Phone({
     required this.id,
@@ -14,7 +17,10 @@ class Phone {
     required this.storage,
     required this.ram,
     required this.price,
-    required this.isAvailable, // Default to empty string if no image is provided
+    required this.costPrice,
+    required this.salePrice,
+    required this.isAvailable,
+    this.note = '',
   });
 
   void setAvailable(bool isAvailable) {
@@ -29,7 +35,10 @@ class Phone {
       storage: json['storage'] as String,
       ram: json['ram'] as String,
       price: json['price'] as int,
+      costPrice: json['costPrice'] as int,
+      salePrice: json['salePrice'] as int,
       isAvailable: json['isAvailable'] as bool,
+      note: json['note'] as String? ?? '',
     );
   }
 
@@ -40,8 +49,11 @@ class Phone {
       'ram': ram,
       'storage': storage,
       'price': price,
+      'costPrice': costPrice,
+      'salePrice': salePrice,
       'name': name,
       'isAvailable': isAvailable,
+      'note': note,
     };
   }
 }

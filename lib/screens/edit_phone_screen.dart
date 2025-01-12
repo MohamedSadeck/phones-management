@@ -22,7 +22,10 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
   late String _selectedRam;
   late String _selectedStorage;
   late int _selectedPrice;
+  late int _selectedCostPrice; // renamed
+  late int _selectedSalePrice; // renamed
   late String _phoneName;
+  late String _note;
   late bool _isAvailable;
 
   @override
@@ -40,12 +43,17 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
     _selectedRam = phone.ram;
     _selectedStorage = phone.storage;
     _selectedPrice = phone.price;
+    _selectedCostPrice = phone.costPrice; // renamed
+    _selectedSalePrice = phone.salePrice; // renamed
     _phoneName = phone.name;
+    _note = phone.note;
     _isAvailable = phone.isAvailable;
     super.didChangeDependencies();
   }
 
   bool priceIsValid = true;
+  bool costPriceIsValid = true; // renamed
+  bool salePriceIsValid = true; // renamed
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +79,12 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
                 const SizedBox(height: 18),
                 priceField(),
                 const SizedBox(height: 18),
+                costPriceField(), // reordered and renamed
+                const SizedBox(height: 18),
+                salePriceField(), // renamed
+                const SizedBox(height: 18),
+                noteField(context),
+                const SizedBox(height: 18),
                 // imageUrlField(context),
                 Switch(
                     value: _isAvailable,
@@ -94,28 +108,41 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
       PhoneProvider phoneProvider, BuildContext context, Phone oldPhone) {
     return ElevatedButton(
       onPressed: () async {
+        bool isValid = true;
         if (_selectedPrice == 0) {
           setState(() {
             priceIsValid = false;
-          });
-        } else if (!priceIsValid) {
-          setState(() {
-            priceIsValid = true;
+            isValid = false;
           });
         }
-        if (_formKey.currentState!.validate()) {
-          // Get other values and create the Phone instance
-          // You can access _selectedBrand.name and other properties here
+        if (_selectedCostPrice == 0) {
+          // renamed
+          setState(() {
+            costPriceIsValid = false; // renamed
+            isValid = false;
+          });
+        }
+        if (_selectedSalePrice == 0) {
+          // renamed
+          setState(() {
+            salePriceIsValid = false; // renamed
+            isValid = false;
+          });
+        }
+
+        if (_formKey.currentState!.validate() && isValid) {
           Phone updatedPhone = Phone(
             id: _id,
             brand: _selectedBrand,
             ram: _selectedRam,
             storage: _selectedStorage,
             price: _selectedPrice,
+            costPrice: _selectedCostPrice, // renamed
+            salePrice: _selectedSalePrice, // renamed
             name: _phoneName,
             isAvailable: _isAvailable,
+            note: _note,
           );
-          // print(_id);
           phoneProvider.updatePhone(oldPhone, updatedPhone);
           Navigator.pop(context);
         }
@@ -167,8 +194,9 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
 
   TextFormField phoneNameField(BuildContext context) {
     return TextFormField(
-      // controller: nameController,
       initialValue: _phoneName,
+      textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
         labelText: 'Phone Name',
         hintText: 'Enter the phone name',
@@ -281,6 +309,82 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
     );
   }
 
+  Container costPriceField() {
+    // renamed
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: costPriceIsValid ? Colors.grey : Colors.red), // renamed
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        title: Text(
+          'Cost Price', // renamed
+          style: TextStyle(
+            color: _selectedCostPrice == 0
+                ? Colors.grey[700]
+                : Colors.black, // renamed
+          ),
+        ),
+        trailing: Text(
+          '$_selectedCostPrice Da', // renamed
+          style: const TextStyle(fontSize: 18),
+        ),
+        onTap: () => _showPricePicker('cost'), // renamed
+      ),
+    );
+  }
+
+  Container salePriceField() {
+    // renamed
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: salePriceIsValid ? Colors.grey : Colors.red), // renamed
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        title: Text(
+          'Sale Price', // renamed
+          style: TextStyle(
+            color: _selectedSalePrice == 0
+                ? Colors.grey[700]
+                : Colors.black, // renamed
+          ),
+        ),
+        trailing: Text(
+          '$_selectedSalePrice Da', // renamed
+          style: const TextStyle(fontSize: 18),
+        ),
+        onTap: () => _showPricePicker('sale'), // renamed
+      ),
+    );
+  }
+
+  TextFormField noteField(BuildContext context) {
+    return TextFormField(
+      initialValue: _note,
+      maxLines: 3,
+      textCapitalization: TextCapitalization.sentences,
+      textInputAction: TextInputAction.done,
+      decoration: InputDecoration(
+        labelText: 'Note',
+        hintText: 'Add any additional information',
+        contentPadding: const EdgeInsets.all(15.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          borderSide: BorderSide(color: Theme.of(context).primaryColor),
+        ),
+      ),
+      onChanged: (value) {
+        _note = value;
+      },
+    );
+  }
+
   String? validatePrice(int price) {
     if (price == 0) {
       return 'Please select a valid price';
@@ -288,15 +392,21 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
     return null;
   }
 
-  Future<void> _showPricePicker() async {
+  Future<void> _showPricePicker([String? priceType]) async {
     List<int>? selectedDigits = await showModalBottomSheet<List<int>>(
       context: context,
       builder: (BuildContext context) {
+        int initialValue = priceType == 'sale' // renamed
+            ? _selectedSalePrice // renamed
+            : priceType == 'cost' // renamed
+                ? _selectedCostPrice // renamed
+                : _selectedPrice;
+
         return PricePicker(
           initialDigits: [
-            _selectedPrice ~/ 10000,
-            (_selectedPrice ~/ 1000) % 10,
-            (_selectedPrice ~/ 100) % 10,
+            initialValue ~/ 10000,
+            (initialValue ~/ 1000) % 10,
+            (initialValue ~/ 100) % 10,
           ],
         );
       },
@@ -304,9 +414,19 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
 
     if (selectedDigits != null) {
       setState(() {
-        _selectedPrice = selectedDigits[0] * 10000 +
+        int newPrice = selectedDigits[0] * 10000 +
             selectedDigits[1] * 1000 +
             selectedDigits[2] * 100;
+
+        if (priceType == 'sale') {
+          // renamed
+          _selectedSalePrice = newPrice; // renamed
+        } else if (priceType == 'cost') {
+          // renamed
+          _selectedCostPrice = newPrice; // renamed
+        } else {
+          _selectedPrice = newPrice;
+        }
       });
     }
   }

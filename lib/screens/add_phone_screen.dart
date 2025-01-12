@@ -22,14 +22,20 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
   String? _selectedRam;
   String? _selectedStorage;
   int _selectedPrice = 0;
+  int _selectedCostPrice = 0; // renamed from _selectedBuyingPrice
+  int _selectedSalePrice = 0; // renamed from _selectedSellingPrice
 
   TextEditingController nameController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
 
   bool priceIsValid = true;
+  bool costPriceIsValid = true; // renamed
+  bool salePriceIsValid = true; // renamed
 
   @override
   void dispose() {
     nameController.dispose();
+    noteController.dispose();
     super.dispose();
   }
 
@@ -54,8 +60,12 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
                 storageRamRow(),
                 const SizedBox(height: 18),
                 priceField(),
-                // const SizedBox(height: 18),
-                // imageUrlField(context),
+                const SizedBox(height: 18),
+                costPriceField(), // reordered and renamed
+                const SizedBox(height: 18),
+                salePriceField(), // renamed
+                const SizedBox(height: 18),
+                noteField(context),
                 const SizedBox(height: 18),
                 addPhoneButton(phoneProvider, context),
               ],
@@ -70,26 +80,38 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
       PhoneProvider phoneProvider, BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
+        bool isValid = true;
         if (_selectedPrice == 0) {
           setState(() {
             priceIsValid = false;
-          });
-        } else if (!priceIsValid) {
-          setState(() {
-            priceIsValid = true;
+            isValid = false;
           });
         }
-        if (_formKey.currentState!.validate()) {
-          // Get other values and create the Phone instance
-          // You can access _selectedBrand.name and other properties here
+        if (_selectedSalePrice == 0) {
+          setState(() {
+            salePriceIsValid = false;
+            isValid = false;
+          });
+        }
+        if (_selectedCostPrice == 0) {
+          setState(() {
+            costPriceIsValid = false;
+            isValid = false;
+          });
+        }
+
+        if (_formKey.currentState!.validate() && isValid) {
           Phone newPhone = Phone(
             id: const Uuid().v4(),
             brand: _selectedBrand!,
             ram: _selectedRam!,
             storage: _selectedStorage!,
             price: _selectedPrice,
+            salePrice: _selectedSalePrice,
+            costPrice: _selectedCostPrice,
             name: nameController.text,
             isAvailable: true,
+            note: noteController.text,
           );
           phoneProvider.addPhone(newPhone);
           Navigator.pop(context);
@@ -143,6 +165,8 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
   TextFormField phoneNameField(BuildContext context) {
     return TextFormField(
       controller: nameController,
+      textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
         labelText: 'Phone Name',
         hintText: 'Enter the phone name',
@@ -252,11 +276,78 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
     );
   }
 
+  Container salePriceField() {
+    // renamed from sellingPriceField
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: salePriceIsValid ? Colors.grey : Colors.red),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        title: Text(
+          'Sale Price', // renamed
+          style: TextStyle(
+            color: _selectedSalePrice == 0 ? Colors.grey[700] : Colors.black,
+          ),
+        ),
+        trailing: Text(
+          '$_selectedSalePrice Da',
+          style: const TextStyle(fontSize: 18),
+        ),
+        onTap: () => _showPricePicker('sale'), // renamed
+      ),
+    );
+  }
+
+  Container costPriceField() {
+    // renamed from buyingPriceField
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: costPriceIsValid ? Colors.grey : Colors.red),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        title: Text(
+          'Cost Price', // renamed
+          style: TextStyle(
+            color: _selectedCostPrice == 0 ? Colors.grey[700] : Colors.black,
+          ),
+        ),
+        trailing: Text(
+          '$_selectedCostPrice Da',
+          style: const TextStyle(fontSize: 18),
+        ),
+        onTap: () => _showPricePicker('cost'), // renamed
+      ),
+    );
+  }
+
   TextFormField imageUrlField(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(
         labelText: 'Image URL',
         hintText: 'Enter the URL',
+        contentPadding: const EdgeInsets.all(15.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          borderSide: BorderSide(color: Theme.of(context).primaryColor),
+        ),
+      ),
+    );
+  }
+
+  TextFormField noteField(BuildContext context) {
+    return TextFormField(
+      controller: noteController,
+      maxLines: 3,
+      textCapitalization: TextCapitalization.sentences,
+      textInputAction: TextInputAction.done,
+      decoration: InputDecoration(
+        labelText: 'Note',
+        hintText: 'Add any additional information',
         contentPadding: const EdgeInsets.all(15.0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.0),
@@ -276,15 +367,21 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
     return null;
   }
 
-  Future<void> _showPricePicker() async {
+  Future<void> _showPricePicker([String? priceType]) async {
     List<int>? selectedDigits = await showModalBottomSheet<List<int>>(
       context: context,
       builder: (BuildContext context) {
+        int initialValue = priceType == 'sale'
+            ? _selectedSalePrice
+            : priceType == 'cost'
+                ? _selectedCostPrice
+                : _selectedPrice;
+
         return PricePicker(
           initialDigits: [
-            _selectedPrice ~/ 10000,
-            (_selectedPrice ~/ 1000) % 10,
-            (_selectedPrice ~/ 100) % 10,
+            initialValue ~/ 10000,
+            (initialValue ~/ 1000) % 10,
+            (initialValue ~/ 100) % 10,
           ],
         );
       },
@@ -292,9 +389,17 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
 
     if (selectedDigits != null) {
       setState(() {
-        _selectedPrice = selectedDigits[0] * 10000 +
+        int newPrice = selectedDigits[0] * 10000 +
             selectedDigits[1] * 1000 +
             selectedDigits[2] * 100;
+
+        if (priceType == 'sale') {
+          _selectedSalePrice = newPrice;
+        } else if (priceType == 'cost') {
+          _selectedCostPrice = newPrice;
+        } else {
+          _selectedPrice = newPrice;
+        }
       });
     }
   }

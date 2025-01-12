@@ -25,8 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final _searchController = TextEditingController();
 
-  RangeValues _selectedPriceRange =
-      const RangeValues(10000, 100000); // Default values
+  RangeValues _selectedPriceRange = const RangeValues(15000, 150000);
 
   bool firstLaunch = true;
 
