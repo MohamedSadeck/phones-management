@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/phone_provider.dart';
 
 class PriceRangeSelector extends StatefulWidget {
   final Function(int min, int max) onRangeChanged;
@@ -12,24 +10,24 @@ class PriceRangeSelector extends StatefulWidget {
 }
 
 class _PriceRangeSelectorState extends State<PriceRangeSelector> {
-  int _minPrice = 10000;
-  int _maxPrice = 100000; // Default maximum price
+  static const int minPriceLimit = 15000;
+  static const int maxPriceLimit = 150000;
+
+  int _minPrice = minPriceLimit;
+  int _maxPrice = maxPriceLimit;
 
   @override
   Widget build(BuildContext context) {
-    final phoneProvider = Provider.of<PhoneProvider>(context);
     return Column(
       children: [
         Text('Price Range: $_minPrice - $_maxPrice'),
         RangeSlider(
           values: RangeValues(
-            _minPrice.toDouble().clamp(phoneProvider.getMinPrice().toDouble(),
-                phoneProvider.getMaxPrice().toDouble()),
-            _maxPrice.toDouble().clamp(phoneProvider.getMinPrice().toDouble(),
-                phoneProvider.getMaxPrice().toDouble()),
+            _minPrice.toDouble(),
+            _maxPrice.toDouble(),
           ),
-          min: phoneProvider.getMinPrice().toDouble(),
-          max: phoneProvider.getMaxPrice().toDouble(),
+          min: minPriceLimit.toDouble(),
+          max: maxPriceLimit.toDouble(),
           onChanged: (values) {
             setState(() {
               _minPrice = values.start.toInt();
@@ -41,9 +39,7 @@ class _PriceRangeSelectorState extends State<PriceRangeSelector> {
             _minPrice.toStringAsFixed(0),
             _maxPrice.toStringAsFixed(0),
           ),
-          divisions:
-              ((phoneProvider.getMaxPrice() - phoneProvider.getMinPrice()) ~/
-                  5000),
+          divisions: 10,
         ),
       ],
     );
