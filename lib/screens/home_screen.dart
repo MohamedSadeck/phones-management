@@ -23,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Phone> phones = [];
 
-  String selectedBrand = 'All';
+  String selectedBrand = 'Samsung';
 
   final _searchController = TextEditingController();
 
@@ -204,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     : Colors.transparent,
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

@@ -287,7 +287,7 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
           ),
         ),
         trailing: Text(
-          '$_selectedCostPrice Da',
+          _formatPrice(_selectedCostPrice),
           style: const TextStyle(fontSize: 18),
         ),
         onTap: () => _showPricePicker('cost'),
@@ -309,7 +309,7 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
           ),
         ),
         trailing: Text(
-          '$_selectedSalePrice Da',
+          _formatPrice(_selectedSalePrice),
           style: const TextStyle(fontSize: 18),
         ),
         onTap: () => _showPricePicker('sale'),
@@ -360,7 +360,8 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
 
         return PricePicker(
           initialDigits: [
-            initialValue ~/ 10000,
+            initialValue ~/ 100000,
+            (initialValue ~/ 10000) % 10,
             (initialValue ~/ 1000) % 10,
             (initialValue ~/ 100) % 10,
           ],
@@ -370,9 +371,10 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
 
     if (selectedDigits != null) {
       setState(() {
-        int newPrice = selectedDigits[0] * 10000 +
-            selectedDigits[1] * 1000 +
-            selectedDigits[2] * 100;
+        int newPrice = selectedDigits[0] * 100000 +
+            selectedDigits[1] * 10000 +
+            selectedDigits[2] * 1000 +
+            selectedDigits[3] * 100;
 
         if (priceType == 'sale') {
           _selectedSalePrice = newPrice;
@@ -383,5 +385,15 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
         }
       });
     }
+  }
+
+  String _formatPrice(int price) {
+    if (price == 0) return '0 DA';
+    String priceStr = price.toString();
+    final characters = priceStr.split('').reversed.toList();
+    for (var i = 3; i < characters.length; i += 4) {
+      characters.insert(i, ' ');
+    }
+    return '${characters.reversed.join('')} DA';
   }
 }
