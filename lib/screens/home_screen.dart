@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:phones_management/constants/constants.dart';
 import 'package:phones_management/providers/phone_provider.dart';
 import 'package:phones_management/screens/add_phone_screen.dart';
-import 'package:phones_management/screens/settings_screen.dart';
 import 'package:phones_management/widgets/price_range_selector.dart';
 
 import '../models/phone.dart';
@@ -85,24 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          IconButton(
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(SettingsScreen.routeName),
-              icon: const Icon(Icons.settings)),
-          // TextButton(
-          //     onPressed: () {
-          //       // phoneProvider.clearPhones();
-          //       // phoneProvider.showPhone();
-          //       seePhones(phoneProvider.filteredPhones);
-          //     },
-          //     child: const Text(
-          //       'Show',
-          //       style: TextStyle(color: Colors.black),
-          //     ))
+          // IconButton(
+          //     onPressed: () =>
+          //         Navigator.of(context).pushNamed(SettingsScreen.routeName),
+          //     icon: const Icon(Icons.settings)),
         ],
       ),
       body: Container(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -192,24 +181,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 : Colors.transparent,
           ),
           ...brandsList.map((brand) {
-            return ActionChip(
-              label: Text(
-                brand,
-                style: TextStyle(
-                  color: selectedBrand == brand
-                      ? Colors.white
-                      : Theme.of(context).primaryColor,
+            return Padding(
+              padding: const EdgeInsets.only(right: 4.0, left: 4),
+              child: ActionChip(
+                label: Text(
+                  brand,
+                  style: TextStyle(
+                    color: selectedBrand == brand
+                        ? Colors.white
+                        : Theme.of(context).primaryColor,
+                  ),
                 ),
+                onPressed: () {
+                  selectedBrand = brand;
+                  phoneProvider.updateFilteredPhones(
+                      searchQuery: _searchController.text,
+                      selectedBrand: selectedBrand);
+                },
+                backgroundColor: selectedBrand == brand
+                    ? Theme.of(context).primaryColor
+                    : Colors.transparent,
               ),
-              onPressed: () {
-                selectedBrand = brand;
-                phoneProvider.updateFilteredPhones(
-                    searchQuery: _searchController.text,
-                    selectedBrand: selectedBrand);
-              },
-              backgroundColor: selectedBrand == brand
-                  ? Theme.of(context).primaryColor
-                  : Colors.transparent,
             );
           }).toList(),
         ],
