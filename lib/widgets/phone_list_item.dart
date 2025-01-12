@@ -38,7 +38,7 @@ class PhoneListItem extends StatelessWidget {
               const TextStyle(fontSize: 17.0), // Adjust the font size as needed
         ),
         trailing: Text(
-          '${phone.price} Da',
+          '${phone.salePrice} Da',
           style: const TextStyle(
               fontSize: 20.0,
               fontWeight:

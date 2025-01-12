@@ -4,7 +4,6 @@ class Phone {
   final String name;
   final String storage;
   final String ram;
-  final int price;
   final int costPrice;
   final int salePrice;
   final String note;
@@ -16,7 +15,6 @@ class Phone {
     required this.name,
     required this.storage,
     required this.ram,
-    required this.price,
     required this.costPrice,
     required this.salePrice,
     required this.isAvailable,
@@ -34,7 +32,6 @@ class Phone {
       name: json['name'] as String,
       storage: json['storage'] as String,
       ram: json['ram'] as String,
-      price: json['price'] as int,
       costPrice: json['costPrice'] as int,
       salePrice: json['salePrice'] as int,
       isAvailable: json['isAvailable'] as bool,
@@ -48,7 +45,6 @@ class Phone {
       'brand': brand,
       'ram': ram,
       'storage': storage,
-      'price': price,
       'costPrice': costPrice,
       'salePrice': salePrice,
       'name': name,

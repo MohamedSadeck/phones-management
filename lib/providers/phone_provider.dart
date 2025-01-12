@@ -55,8 +55,8 @@ class PhoneProvider extends ChangeNotifier {
     _ascendingOrder = !_ascendingOrder;
     _filteredPhones.sort((a, b) {
       return _ascendingOrder
-          ? a.price.compareTo(b.price)
-          : b.price.compareTo(a.price);
+          ? a.salePrice.compareTo(b.salePrice)
+          : b.salePrice.compareTo(a.salePrice);
     });
 
     notifyListeners();
@@ -66,14 +66,18 @@ class PhoneProvider extends ChangeNotifier {
     if (_phones.isEmpty) {
       return 10000;
     }
-    return _phones.map((phone) => phone.price).reduce((a, b) => a < b ? a : b);
+    return _phones
+        .map((phone) => phone.salePrice)
+        .reduce((a, b) => a < b ? a : b);
   }
 
   int getMaxPrice() {
     if (_phones.isEmpty) {
       return 100000; // Default maximum price
     }
-    return _phones.map((phone) => phone.price).reduce((a, b) => a > b ? a : b);
+    return _phones
+        .map((phone) => phone.salePrice)
+        .reduce((a, b) => a > b ? a : b);
   }
 
   void addPhone(Phone newPhone) {

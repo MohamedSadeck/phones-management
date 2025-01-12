@@ -21,16 +21,15 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
   String? _selectedBrand;
   String? _selectedRam;
   String? _selectedStorage;
-  int _selectedPrice = 0;
-  int _selectedCostPrice = 0; // renamed from _selectedBuyingPrice
-  int _selectedSalePrice = 0; // renamed from _selectedSellingPrice
+  int _selectedCostPrice = 0;
+  int _selectedSalePrice = 0;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController noteController = TextEditingController();
 
   bool priceIsValid = true;
-  bool costPriceIsValid = true; // renamed
-  bool salePriceIsValid = true; // renamed
+  bool costPriceIsValid = true;
+  bool salePriceIsValid = true;
 
   @override
   void dispose() {
@@ -59,8 +58,6 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
                 const SizedBox(height: 18),
                 storageRamRow(),
                 const SizedBox(height: 18),
-                priceField(),
-                const SizedBox(height: 18),
                 costPriceField(), // reordered and renamed
                 const SizedBox(height: 18),
                 salePriceField(), // renamed
@@ -81,12 +78,6 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
     return ElevatedButton(
       onPressed: () async {
         bool isValid = true;
-        if (_selectedPrice == 0) {
-          setState(() {
-            priceIsValid = false;
-            isValid = false;
-          });
-        }
         if (_selectedSalePrice == 0) {
           setState(() {
             salePriceIsValid = false;
@@ -106,7 +97,6 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
             brand: _selectedBrand!,
             ram: _selectedRam!,
             storage: _selectedStorage!,
-            price: _selectedPrice,
             salePrice: _selectedSalePrice,
             costPrice: _selectedCostPrice,
             name: nameController.text,
@@ -253,29 +243,6 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
     );
   }
 
-  Container priceField() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: priceIsValid ? Colors.grey : Colors.red),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ListTile(
-        title: Text(
-          'Price',
-          style: TextStyle(
-            color: _selectedPrice == 0 ? Colors.grey[700] : Colors.black,
-          ),
-        ),
-        focusColor: Colors.red,
-        trailing: Text(
-          '$_selectedPrice Da',
-          style: const TextStyle(fontSize: 18),
-        ),
-        onTap: _showPricePicker, // Show price picker modal
-      ),
-    );
-  }
-
   Container salePriceField() {
     // renamed from sellingPriceField
     return Container(
@@ -371,11 +338,9 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
     List<int>? selectedDigits = await showModalBottomSheet<List<int>>(
       context: context,
       builder: (BuildContext context) {
-        int initialValue = priceType == 'sale'
-            ? _selectedSalePrice
-            : priceType == 'cost'
-                ? _selectedCostPrice
-                : _selectedPrice;
+        // Get the current value based on price type
+        int initialValue =
+            priceType == 'sale' ? _selectedSalePrice : _selectedCostPrice;
 
         return PricePicker(
           initialDigits: [
@@ -395,10 +360,8 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
 
         if (priceType == 'sale') {
           _selectedSalePrice = newPrice;
-        } else if (priceType == 'cost') {
-          _selectedCostPrice = newPrice;
         } else {
-          _selectedPrice = newPrice;
+          _selectedCostPrice = newPrice;
         }
       });
     }

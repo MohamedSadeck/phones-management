@@ -251,15 +251,15 @@ class _HomeScreenState extends State<HomeScreen> {
       return const RangeValues(0, 1000); // Default values
     }
 
-    int minPrice = phones[0].price;
-    int maxPrice = phones[0].price;
+    int minPrice = phones[0].salePrice;
+    int maxPrice = phones[0].salePrice;
 
     for (var phone in phones) {
-      if (phone.price < minPrice) {
-        minPrice = phone.price;
+      if (phone.salePrice < minPrice) {
+        minPrice = phone.salePrice;
       }
-      if (phone.price > maxPrice) {
-        maxPrice = phone.price;
+      if (phone.salePrice > maxPrice) {
+        maxPrice = phone.salePrice;
       }
     }
 
@@ -294,8 +294,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.pop(context);
                       // Filter phones based on the selected price range
                       List<Phone> filteredByPrice = phones.where((phone) {
-                        return phone.price >= _selectedPriceRange.start &&
-                            phone.price <= _selectedPriceRange.end;
+                        return phone.salePrice >= _selectedPriceRange.start &&
+                            phone.salePrice <= _selectedPriceRange.end;
                       }).toList();
                       phoneProvider.setFilteredPhones(filteredByPrice);
                     },

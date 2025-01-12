@@ -20,7 +20,7 @@ Future<List<Phone>> loadPhoneData() async {
       }
       // print('load phone data');
       // seePhones(phoneList);
-      phoneList.sort((a, b) => a.price.compareTo(b.price));
+      phoneList.sort((a, b) => a.salePrice.compareTo(b.salePrice));
       return phoneList;
     } else {
       return [];

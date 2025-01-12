@@ -22,8 +22,8 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
   late String _selectedRam;
   late String _selectedStorage;
   late int _selectedPrice;
-  late int _selectedCostPrice; // renamed
-  late int _selectedSalePrice; // renamed
+  late int _selectedCostPrice;
+  late int _selectedSalePrice;
   late String _phoneName;
   late String _note;
   late bool _isAvailable;
@@ -42,18 +42,16 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
     _selectedBrand = phone.brand;
     _selectedRam = phone.ram;
     _selectedStorage = phone.storage;
-    _selectedPrice = phone.price;
-    _selectedCostPrice = phone.costPrice; // renamed
-    _selectedSalePrice = phone.salePrice; // renamed
+    _selectedCostPrice = phone.costPrice;
+    _selectedSalePrice = phone.salePrice;
     _phoneName = phone.name;
     _note = phone.note;
     _isAvailable = phone.isAvailable;
     super.didChangeDependencies();
   }
 
-  bool priceIsValid = true;
-  bool costPriceIsValid = true; // renamed
-  bool salePriceIsValid = true; // renamed
+  bool costPriceIsValid = true;
+  bool salePriceIsValid = true;
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +75,9 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
                 const SizedBox(height: 18),
                 storageRamRow(),
                 const SizedBox(height: 18),
-                priceField(),
+                costPriceField(), // reordered
                 const SizedBox(height: 18),
-                costPriceField(), // reordered and renamed
-                const SizedBox(height: 18),
-                salePriceField(), // renamed
+                salePriceField(),
                 const SizedBox(height: 18),
                 noteField(context),
                 const SizedBox(height: 18),
@@ -109,23 +105,15 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
     return ElevatedButton(
       onPressed: () async {
         bool isValid = true;
-        if (_selectedPrice == 0) {
-          setState(() {
-            priceIsValid = false;
-            isValid = false;
-          });
-        }
         if (_selectedCostPrice == 0) {
-          // renamed
           setState(() {
-            costPriceIsValid = false; // renamed
+            costPriceIsValid = false;
             isValid = false;
           });
         }
         if (_selectedSalePrice == 0) {
-          // renamed
           setState(() {
-            salePriceIsValid = false; // renamed
+            salePriceIsValid = false;
             isValid = false;
           });
         }
@@ -136,9 +124,8 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
             brand: _selectedBrand,
             ram: _selectedRam,
             storage: _selectedStorage,
-            price: _selectedPrice,
-            costPrice: _selectedCostPrice, // renamed
-            salePrice: _selectedSalePrice, // renamed
+            costPrice: _selectedCostPrice,
+            salePrice: _selectedSalePrice,
             name: _phoneName,
             isAvailable: _isAvailable,
             note: _note,
@@ -286,77 +273,46 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
     );
   }
 
-  Container priceField() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: priceIsValid ? Colors.grey : Colors.red),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ListTile(
-        title: Text(
-          'Price',
-          style: TextStyle(
-            color: _selectedPrice == 0 ? Colors.grey[700] : Colors.black,
-          ),
-        ),
-        focusColor: Colors.red,
-        trailing: Text(
-          '$_selectedPrice Da',
-          style: const TextStyle(fontSize: 18),
-        ),
-        onTap: _showPricePicker, // Show price picker modal
-      ),
-    );
-  }
-
   Container costPriceField() {
-    // renamed
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-            color: costPriceIsValid ? Colors.grey : Colors.red), // renamed
+        border: Border.all(color: costPriceIsValid ? Colors.grey : Colors.red),
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
         title: Text(
-          'Cost Price', // renamed
+          'Cost Price',
           style: TextStyle(
-            color: _selectedCostPrice == 0
-                ? Colors.grey[700]
-                : Colors.black, // renamed
+            color: _selectedCostPrice == 0 ? Colors.grey[700] : Colors.black,
           ),
         ),
         trailing: Text(
-          '$_selectedCostPrice Da', // renamed
+          '$_selectedCostPrice Da',
           style: const TextStyle(fontSize: 18),
         ),
-        onTap: () => _showPricePicker('cost'), // renamed
+        onTap: () => _showPricePicker('cost'),
       ),
     );
   }
 
   Container salePriceField() {
-    // renamed
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-            color: salePriceIsValid ? Colors.grey : Colors.red), // renamed
+        border: Border.all(color: salePriceIsValid ? Colors.grey : Colors.red),
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
         title: Text(
-          'Sale Price', // renamed
+          'Sale Price',
           style: TextStyle(
-            color: _selectedSalePrice == 0
-                ? Colors.grey[700]
-                : Colors.black, // renamed
+            color: _selectedSalePrice == 0 ? Colors.grey[700] : Colors.black,
           ),
         ),
         trailing: Text(
-          '$_selectedSalePrice Da', // renamed
+          '$_selectedSalePrice Da',
           style: const TextStyle(fontSize: 18),
         ),
-        onTap: () => _showPricePicker('sale'), // renamed
+        onTap: () => _showPricePicker('sale'),
       ),
     );
   }
@@ -396,10 +352,10 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
     List<int>? selectedDigits = await showModalBottomSheet<List<int>>(
       context: context,
       builder: (BuildContext context) {
-        int initialValue = priceType == 'sale' // renamed
-            ? _selectedSalePrice // renamed
-            : priceType == 'cost' // renamed
-                ? _selectedCostPrice // renamed
+        int initialValue = priceType == 'sale'
+            ? _selectedSalePrice
+            : priceType == 'cost'
+                ? _selectedCostPrice
                 : _selectedPrice;
 
         return PricePicker(
@@ -419,11 +375,9 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
             selectedDigits[2] * 100;
 
         if (priceType == 'sale') {
-          // renamed
-          _selectedSalePrice = newPrice; // renamed
+          _selectedSalePrice = newPrice;
         } else if (priceType == 'cost') {
-          // renamed
-          _selectedCostPrice = newPrice; // renamed
+          _selectedCostPrice = newPrice;
         } else {
           _selectedPrice = newPrice;
         }
