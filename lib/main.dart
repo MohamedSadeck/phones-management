@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:phones_management/providers/phone_provider.dart';
 import 'package:phones_management/screens/add_phone_screen.dart';
 import 'package:phones_management/screens/edit_phone_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:phones_management/screens/settings_screen.dart';
 import 'screens/home_screen.dart';
 
@@ -32,7 +31,18 @@ class AppRoot extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Store App',
-      theme: ThemeData(primarySwatch: Colors.blueGrey),
+      theme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blueGrey,
+          primary: Colors.blueGrey,
+          secondary: Colors.blueGrey[300]!,
+          surface: Colors.white,
+          background: Colors.grey[50]!,
+          error: Colors.red[400]!,
+        ),
+        useMaterial3: true,
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),

@@ -40,23 +40,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final phoneProvider = Provider.of<PhoneProvider>(context);
-    print('build');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Phones'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         actions: [
           TextButton.icon(
             onPressed: () {
               _showPriceRangeBottomSheet(
                   context, phoneProvider.filteredPhones, phoneProvider);
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.filter_alt_outlined,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
-            label: const Text(
+            label: Text(
               'Filter',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
             ),
           ),
           TextButton.icon(
@@ -100,21 +101,24 @@ class _HomeScreenState extends State<HomeScreen> {
           //     ))
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            buildSearchBar(phoneProvider),
-            const SizedBox(height: 20), // Add spacing
-            actionChipRow(context),
-            const SizedBox(height: 20),
-            Consumer<PhoneProvider>(builder: (context, value, child) {
-              print('consumer rebuild');
-              return phonesListView(context, phoneProvider);
-            })
-          ],
+      body: Container(
+        color: Theme.of(context).colorScheme.background,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              buildSearchBar(phoneProvider),
+              const SizedBox(height: 20), // Add spacing
+              actionChipRow(context),
+              const SizedBox(height: 20),
+              Consumer<PhoneProvider>(builder: (context, value, child) {
+                print('consumer rebuild');
+                return phonesListView(context, phoneProvider);
+              })
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -122,6 +126,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.of(context).pushNamed(AddPhoneScreen.routeName),
         icon: const Icon(Icons.add),
         label: const Text('Add a Phone'),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        foregroundColor: Theme.of(context).colorScheme.onSecondary,
       ),
     );
   }
@@ -214,11 +220,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildSearchBar(PhoneProvider phoneProvider) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 5,
             offset: const Offset(0, 3), // changes position of shadow
