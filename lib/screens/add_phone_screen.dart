@@ -43,7 +43,7 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
     final phoneProvider = Provider.of<PhoneProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Phone'),
+        title: const Text('Add a new Phone'),
       ),
       body: SingleChildScrollView(
         child: Padding(

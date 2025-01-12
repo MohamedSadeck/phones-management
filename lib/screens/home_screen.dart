@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -297,6 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         return phone.salePrice >= _selectedPriceRange.start &&
                             phone.salePrice <= _selectedPriceRange.end;
                       }).toList();
+                      log('Filtered phones: $filteredByPrice');
                       phoneProvider.setFilteredPhones(filteredByPrice);
                     },
                     child: const Text('Apply'),

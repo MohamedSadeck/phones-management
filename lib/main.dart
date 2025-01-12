@@ -30,7 +30,7 @@ class AppRoot extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Store App',
+      title: 'Phones Management',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
         colorScheme: ColorScheme.fromSeed(
@@ -38,8 +38,21 @@ class AppRoot extends StatelessWidget {
           primary: Colors.blueGrey,
           secondary: Colors.blueGrey[300]!,
           surface: Colors.white,
-          background: Colors.grey[50]!,
           error: Colors.red[400]!,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            minimumSize: const Size(200, 56),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 4,
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         useMaterial3: true,
       ),

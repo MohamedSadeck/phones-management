@@ -60,7 +60,7 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
     // print(phone.name);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Phone Edit'),
+        title: const Text('Edit Phone'),
       ),
       body: SingleChildScrollView(
         child: Padding(
