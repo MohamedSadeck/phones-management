@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:store_app/constants/constants.dart';
-import 'package:store_app/providers/phone_provider.dart';
-import 'package:store_app/screens/add_phone_screen.dart';
-import 'package:store_app/screens/settings_screen.dart';
-import 'package:store_app/widgets/price_range_selector.dart';
+import 'package:phones_management/constants/constants.dart';
+import 'package:phones_management/providers/phone_provider.dart';
+import 'package:phones_management/screens/add_phone_screen.dart';
+import 'package:phones_management/screens/settings_screen.dart';
+import 'package:phones_management/widgets/price_range_selector.dart';
 
 import '../models/phone.dart';
 import '../widgets/phone_list_item.dart';

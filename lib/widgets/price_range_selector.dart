@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:store_app/providers/phone_provider.dart';
+import '../providers/phone_provider.dart';
 
 class PriceRangeSelector extends StatefulWidget {
   final Function(int min, int max) onRangeChanged;

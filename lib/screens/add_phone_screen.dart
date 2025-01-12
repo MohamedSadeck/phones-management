@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:store_app/providers/phone_provider.dart';
+import 'package:phones_management/providers/phone_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../constants/constants.dart';

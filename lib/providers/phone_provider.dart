@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:store_app/models/phone.dart';
-import 'package:store_app/models/phone_data.dart';
+import 'package:phones_management/models/phone.dart';
+import 'package:phones_management/models/phone_data.dart';
 
 class PhoneProvider extends ChangeNotifier {
   List<Phone> _phones = [];
