@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "84884526623",
+    "project_id": "phones-management",
+    "storage_bucket": "phones-management.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84884526623:android:bc651f6daeda9b3188e72a",
+        "android_client_info": {
+          "package_name": "com.example.phones_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzrsjf5lmkEp_aGiPpIPF_uZ5M9t-bBU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

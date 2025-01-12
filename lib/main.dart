@@ -5,11 +5,9 @@ import 'package:phones_management/screens/add_phone_screen.dart';
 import 'package:phones_management/screens/edit_phone_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:phones_management/screens/settings_screen.dart';
-
-import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -19,25 +17,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform),
-        builder: (context, snapshot) {
-          return ChangeNotifierProvider(
-            create: (BuildContext context) => PhoneProvider(),
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'store app',
-              theme: ThemeData(primarySwatch: Colors.blueGrey),
-              initialRoute: '/',
-              routes: {
-                '/': (context) => const HomeScreen(),
-                AddPhoneScreen.routeName: (context) => const AddPhoneScreen(),
-                EditPhoneScreen.routeName: (context) => const EditPhoneScreen(),
-                SettingsScreen.routeName: (context) => const SettingsScreen(),
-              },
-            ),
-          );
-        });
+    return ChangeNotifierProvider(
+      create: (context) => PhoneProvider(),
+      child: const AppRoot(),
+    );
+  }
+}
+
+class AppRoot extends StatelessWidget {
+  const AppRoot({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Store App',
+      theme: ThemeData(primarySwatch: Colors.blueGrey),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        AddPhoneScreen.routeName: (context) => const AddPhoneScreen(),
+        EditPhoneScreen.routeName: (context) => const EditPhoneScreen(),
+        SettingsScreen.routeName: (context) => const SettingsScreen(),
+      },
+    );
   }
 }
