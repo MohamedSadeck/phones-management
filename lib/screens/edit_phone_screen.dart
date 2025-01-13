@@ -84,14 +84,28 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
                 noteField(context),
                 const SizedBox(height: 18),
                 // imageUrlField(context),
-                Switch(
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: SwitchListTile(
+                    title: Text(
+                      _isAvailable ? 'Available for Sale' : 'Sold',
+                      style: TextStyle(
+                        color: _isAvailable ? Colors.green : Colors.red,
+                      ),
+                    ),
                     value: _isAvailable,
                     onChanged: (value) {
                       setState(() {
                         _isAvailable = value;
                       });
                       oldPhone.setAvailable(_isAvailable);
-                    }),
+                    },
+                    activeColor: Theme.of(context).primaryColor,
+                  ),
+                ),
                 const SizedBox(height: 18),
                 editPhoneButton(phoneProvider, context, oldPhone),
               ],

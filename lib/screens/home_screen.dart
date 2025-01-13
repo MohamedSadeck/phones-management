@@ -72,9 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Fluttertoast.showToast(
                   msg: 'Sorted',
                   toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
+                  gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
+                  backgroundColor: Colors.green,
                   textColor: Colors.white,
                   fontSize: 16.0);
             },
