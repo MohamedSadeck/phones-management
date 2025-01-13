@@ -12,6 +12,7 @@ import 'package:phones_management/widgets/price_range_selector.dart';
 
 import '../models/phone.dart';
 import '../widgets/phone_list_item.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -84,11 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(color: Colors.white),
             ),
           ),
-
-          // IconButton(
-          //     onPressed: () =>
-          //         Navigator.of(context).pushNamed(SettingsScreen.routeName),
-          //     icon: const Icon(Icons.settings)),
+          IconButton(
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(SettingsScreen.routeName),
+              icon: const Icon(Icons.settings)),
         ],
       ),
       body: Container(
