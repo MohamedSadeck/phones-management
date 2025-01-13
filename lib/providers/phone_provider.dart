@@ -9,9 +9,11 @@ class PhoneProvider extends ChangeNotifier {
   List<Phone> _filteredPhones = [];
 
   bool _ascendingOrder = true;
+  bool _showOnlyAvailable = false;
 
   List<Phone> get phones => _phones;
   List<Phone> get filteredPhones => _filteredPhones;
+  bool get showOnlyAvailable => _showOnlyAvailable;
 
   Future<void> loadPhones() async {
     _phones = await loadPhoneData();
@@ -27,6 +29,11 @@ class PhoneProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setShowOnlyAvailable(bool value) {
+    _showOnlyAvailable = value;
+    updateFilteredPhones();
+  }
+
   void updateFilteredPhones(
       {String? searchQuery, String? selectedBrand}) async {
     await loadPhones();
@@ -37,6 +44,11 @@ class PhoneProvider extends ChangeNotifier {
           _phones.where((phone) => phone.brand == selectedBrand).toList();
     } else {
       filteredByBrand = _phones;
+    }
+
+    if (_showOnlyAvailable) {
+      filteredByBrand =
+          filteredByBrand.where((phone) => phone.isAvailable).toList();
     }
 
     if (searchQuery != null && searchQuery.isNotEmpty) {

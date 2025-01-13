@@ -32,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool firstLaunch = true;
 
+  bool _showOnlyAvailable = false;
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -291,6 +293,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _showOnlyAvailable,
+                        onChanged: (value) {
+                          setState(() {
+                            _showOnlyAvailable = value!;
+                          });
+                        },
+                      ),
+                      const Text('Show only available phones'),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -301,6 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }).toList();
                       log('Filtered phones: $filteredByPrice');
                       phoneProvider.setFilteredPhones(filteredByPrice);
+                      phoneProvider.setShowOnlyAvailable(_showOnlyAvailable);
                     },
                     child: const Text('Apply'),
                   ),
