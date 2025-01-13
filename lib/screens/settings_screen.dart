@@ -4,6 +4,7 @@ import 'package:phones_management/providers/phone_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
 import 'dart:io';
+import 'package:phones_management/models/phone.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';
@@ -19,11 +20,14 @@ class SettingsScreen extends StatelessWidget {
       if (result != null) {
         final file = File(result.files.single.path!);
         final jsonContent = await file.readAsString();
-        final jsonData = json.decode(jsonContent);
+        final List<dynamic> jsonData = json.decode(jsonContent);
+
+        final List<Phone> phones =
+            jsonData.map((data) => Phone.fromJson(data)).toList();
 
         final phoneProvider =
             Provider.of<PhoneProvider>(context, listen: false);
-        phoneProvider.loadPhonesFromDatabase(jsonData);
+        phoneProvider.loadPhonesFromDatabase(phones);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Phones imported successfully')),

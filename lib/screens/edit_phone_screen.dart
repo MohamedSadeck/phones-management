@@ -17,16 +17,16 @@ class EditPhoneScreen extends StatefulWidget {
 class _EditPhoneScreenState extends State<EditPhoneScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late String _id;
-  late String _selectedBrand;
-  late String _selectedRam;
-  late String _selectedStorage;
-  late int _selectedPrice;
-  late int _selectedCostPrice;
-  late int _selectedSalePrice;
-  late String _phoneName;
-  late String _note;
-  late bool _isAvailable;
+  String _id = '';
+  String _selectedBrand = '';
+  String _selectedRam = '';
+  String _selectedStorage = '';
+  int _selectedPrice = 0;
+  int _selectedCostPrice = 0;
+  int _selectedSalePrice = 0;
+  String _phoneName = '';
+  String _note = '';
+  bool _isAvailable = false;
 
   @override
   void initState() {
@@ -37,16 +37,18 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
 
   @override
   void didChangeDependencies() {
-    final phone = ModalRoute.of(context)?.settings.arguments as Phone;
-    _id = phone.id;
-    _selectedBrand = phone.brand;
-    _selectedRam = phone.ram;
-    _selectedStorage = phone.storage;
-    _selectedCostPrice = phone.costPrice;
-    _selectedSalePrice = phone.salePrice;
-    _phoneName = phone.name;
-    _note = phone.note;
-    _isAvailable = phone.isAvailable;
+    if (_id.isEmpty) {
+      final phone = ModalRoute.of(context)?.settings.arguments as Phone;
+      _id = phone.id;
+      _selectedBrand = phone.brand;
+      _selectedRam = phone.ram;
+      _selectedStorage = phone.storage;
+      _selectedCostPrice = phone.costPrice;
+      _selectedSalePrice = phone.salePrice;
+      _phoneName = phone.name;
+      _note = phone.note;
+      _isAvailable = phone.isAvailable;
+    }
     super.didChangeDependencies();
   }
 
