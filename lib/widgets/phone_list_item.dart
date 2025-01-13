@@ -20,30 +20,47 @@ class PhoneListItem extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(4.0),
       margin: const EdgeInsets.all(4.0),
-      child: ListTile(
-        leading: Image.asset(brandsImages[brandsList.indexOf(phone.brand)]),
-        title: Text(
-          phone.name,
-          style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          Navigator.of(context).pushNamed(
-            EditPhoneScreen.routeName,
-            arguments: phone,
-          );
-        },
-        subtitle: Text(
-          '${phone.ram}/${phone.storage}',
-          style:
-              const TextStyle(fontSize: 17.0), // Adjust the font size as needed
-        ),
-        trailing: Text(
-          '${phone.salePrice} Da',
-          style: const TextStyle(
-              fontSize: 20.0,
-              fontWeight:
-                  FontWeight.bold), // Adjust the font size and style as needed
-        ),
+      child: Stack(
+        children: [
+          ListTile(
+            leading: Image.asset(brandsImages[brandsList.indexOf(phone.brand)]),
+            title: Text(
+              phone.name,
+              style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                EditPhoneScreen.routeName,
+                arguments: phone,
+              );
+            },
+            subtitle: Text(
+              '${phone.ram}/${phone.storage}',
+              style: const TextStyle(fontSize: 17.0),
+            ),
+            trailing: Text(
+              '${phone.salePrice} Da',
+              style:
+                  const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+          if (!phone.isAvailable)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.all(4.0),
+                color: Colors.red,
+                child: const Text(
+                  'SOLD',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
