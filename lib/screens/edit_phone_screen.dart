@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:phones_management/providers/phone_provider.dart';
@@ -57,12 +59,25 @@ class _EditPhoneScreenState extends State<EditPhoneScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('Edit Phone Screen');
+    log('Edit Phone Screen');
+    debugPrint('Edit Phone Screen');
     final phoneProvider = Provider.of<PhoneProvider>(context, listen: false);
     final oldPhone = ModalRoute.of(context)!.settings.arguments as Phone;
     // print(phone.name);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Phone'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              print("Deleting phone with id: ${oldPhone.id}");
+              phoneProvider.removePhone(oldPhone.id);
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

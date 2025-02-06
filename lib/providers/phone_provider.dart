@@ -17,7 +17,7 @@ class PhoneProvider extends ChangeNotifier {
 
   Future<void> loadPhones() async {
     _phones = await loadPhoneData();
-    // print('load phones $_phones');
+    print("Loaded phones: ${_phones.length}");
   }
 
   Future<List<Phone>> loadPhoneList() {
@@ -114,6 +114,15 @@ class PhoneProvider extends ChangeNotifier {
     }
   }
 
+  void removePhone(String id) {
+    print("Removing phone with id: $id");
+    _phones.removeWhere((phone) => phone.id == id);
+    _filteredPhones.removeWhere((phone) => phone.id == id);
+    print("Remaining phones: ${_phones.length}");
+    savePhoneData(_phones);
+    notifyListeners();
+  }
+
   void clearPhones() async {
     await clearPhoneData();
     await loadPhones();
@@ -123,7 +132,7 @@ class PhoneProvider extends ChangeNotifier {
 
   Future<void> loadPhonesFromDatabase(List<Phone> phonesFromDatabase) async {
     _phones = phonesFromDatabase;
-    _filteredPhones = _phones; // Make sure to update the filtered list as well
+    _filteredPhones = _phones;
     savePhoneData(_phones);
     notifyListeners();
   }
