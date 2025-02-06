@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:phones_management/providers/phone_provider.dart';
@@ -8,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:phones_management/models/phone.dart';
 import 'package:path_provider/path_provider.dart'; // updated import
+import 'package:phones_management/utils/logger.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';
@@ -45,7 +44,6 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _exportJsonFile(BuildContext context) async {
     try {
-      log('Exporting JSON file');
       final phoneProvider = Provider.of<PhoneProvider>(context, listen: false);
       await phoneProvider.loadPhones(); // Ensure phones are loaded
       final jsonList =
@@ -70,8 +68,6 @@ class SettingsScreen extends StatelessWidget {
         );
       }
     } catch (e) {
-      log('Error exporting file: $e');
-      print('Error exporting file: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error exporting file: ${e.toString()}')),
       );
