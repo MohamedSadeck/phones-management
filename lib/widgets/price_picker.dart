@@ -20,32 +20,41 @@ class _PricePickerState extends State<PricePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.4,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildDigitSelector(0),
-              _buildDigitSelector(1),
-              _buildDigitSelector(2),
-              _buildDigitSelector(3),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            _formatPrice(
-                '${_selectedDigits[0]}${_selectedDigits[1]}${_selectedDigits[2]}${_selectedDigits[3]}00'),
-            style: const TextStyle(fontSize: 40),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, _selectedDigits),
-            child: const Text('OK'),
-          ),
-        ],
+    return SingleChildScrollView(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.6,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildDigitSelector(0),
+                _buildDigitSelector(1),
+                _buildDigitSelector(2),
+                _buildDigitSelector(3),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              _formatPrice(
+                  '${_selectedDigits[0]}${_selectedDigits[1]}${_selectedDigits[2]}${_selectedDigits[3]}00'),
+              style: const TextStyle(fontSize: 40),
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context, _selectedDigits),
+                  child: const Text('OK'),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
