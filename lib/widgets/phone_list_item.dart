@@ -23,7 +23,11 @@ class PhoneListItem extends StatelessWidget {
       child: Stack(
         children: [
           ListTile(
-            leading: Image.asset(brandsImages[brandsList.indexOf(phone.brand)]),
+            leading: SizedBox(
+              width: 50.0, // Adjust the width as needed
+              height: 50.0, // Adjust the height as needed
+              child: Image.asset(brandsImages[brandsList.indexOf(phone.brand)]),
+            ),
             title: Text(
               phone.name,
               style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),

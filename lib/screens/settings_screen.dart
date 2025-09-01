@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:phones_management/providers/phone_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:phones_management/models/phone.dart';
-import 'package:path_provider/path_provider.dart'; // updated import
 import 'package:phones_management/utils/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';
@@ -43,27 +44,38 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _exportJsonFile(BuildContext context) async {
     try {
-      final phoneProvider = Provider.of<PhoneProvider>(context, listen: false);
-      await phoneProvider.loadPhones(); // Ensure phones are loaded
-      final jsonList =
-          phoneProvider.phones.map((phone) => phone.toJson()).toList();
-      final jsonContent = json.encode(jsonList);
+      // Ensure the PermissionHandler plugin is initialized
+      WidgetsFlutterBinding.ensureInitialized();
 
-      // Get the base external storage directory
-      final Directory? baseDir = await getExternalStorageDirectory();
-      if (baseDir != null) {
-        final String downloadsPath =
-            '${baseDir.path.split('Android')[0]}Download';
-        final filePath = '$downloadsPath/phones_export.json';
-        final file = File(filePath);
-        await file.writeAsString(jsonContent);
+      // Request storage permissions
+      if (await Permission.storage.request().isGranted) {
+        final phoneProvider =
+            Provider.of<PhoneProvider>(context, listen: false);
+        await phoneProvider.loadPhones(); // Ensure phones are loaded
+        final jsonList =
+            phoneProvider.phones.map((phone) => phone.toJson()).toList();
+        final jsonContent = json.encode(jsonList);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Phones exported to: $filePath')),
-        );
+        // Get the base external storage directory
+        final Directory? baseDir = await getExternalStorageDirectory();
+        if (baseDir != null) {
+          final String downloadsPath =
+              '${baseDir.path.split('Android')[0]}Download';
+          final filePath = '$downloadsPath/phones_export.json';
+          final file = File(filePath);
+          await file.writeAsString(jsonContent);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Phones exported to: $filePath')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not access external storage')),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not access external storage')),
+          const SnackBar(content: Text('Storage permission denied')),
         );
       }
     } catch (e) {
