@@ -9,7 +9,7 @@ class PhoneProvider extends ChangeNotifier {
   List<Phone> _filteredPhones = [];
 
   bool _ascendingOrder = true;
-  bool _showOnlyAvailable = false;
+  bool _showOnlyAvailable = true;
 
   List<Phone> get phones => _phones;
   List<Phone> get filteredPhones => _filteredPhones;
@@ -17,6 +17,12 @@ class PhoneProvider extends ChangeNotifier {
 
   Future<void> loadPhones() async {
     _phones = await loadPhoneData();
+    // Apply default filtering (show only available phones)
+    if (_showOnlyAvailable) {
+      _filteredPhones = _phones.where((phone) => phone.isAvailable).toList();
+    } else {
+      _filteredPhones = _phones;
+    }
     print("Loaded phones: ${_phones.length}");
   }
 

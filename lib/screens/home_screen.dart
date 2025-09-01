@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool firstLaunch = true;
 
-  bool _showOnlyAvailable = false;
+  bool _showOnlyAvailable = true;
 
   @override
   void dispose() {
@@ -137,11 +137,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const Text('Error loading data');
               } else {
                 phones = snapshot.data ?? [];
+                // Apply default filtering on first launch
+                phoneProvider.updateFilteredPhones(selectedBrand: 'All');
                 return Expanded(
                   child: ListView.builder(
-                    itemCount: phones.length,
+                    itemCount: phoneProvider.filteredPhones.length,
                     itemBuilder: (ctx, index) {
-                      return PhoneListItem(phone: phones[index]);
+                      return PhoneListItem(
+                          phone: phoneProvider.filteredPhones[index]);
                     },
                   ),
                 );

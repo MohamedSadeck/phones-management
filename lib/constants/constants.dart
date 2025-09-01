@@ -3,14 +3,26 @@ const String brandM = 'Brand';
 const String name = 'name';
 const String price = 'price';
 
-const List<String> ramOptions = ['2GB', '3GB', '4GB', '6GB', '8GB', '12GB'];
+const List<String> ramOptions = [
+  '2GB',
+  '3GB',
+  '4GB',
+  '6GB',
+  '8GB',
+  '12GB',
+  '16GB',
+  '18GB',
+  '24GB'
+];
 const List<String> storageOptions = [
   '16GB',
   '32GB',
   '64GB',
   '128GB',
   '256GB',
-  '512GB'
+  '512GB',
+  '1TB',
+  '2TB'
 ];
 
 // Static list of brands

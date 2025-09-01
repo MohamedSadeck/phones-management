@@ -59,9 +59,14 @@ class SettingsScreen extends StatelessWidget {
         // Get the base external storage directory
         final Directory? baseDir = await getExternalStorageDirectory();
         if (baseDir != null) {
+          // Get current date for versioning
+          final DateTime now = DateTime.now();
+          final String dateString =
+              '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
           final String downloadsPath =
               '${baseDir.path.split('Android')[0]}Download';
-          final filePath = '$downloadsPath/phones_export.json';
+          final filePath = '$downloadsPath/phones_export_$dateString.json';
           final file = File(filePath);
           await file.writeAsString(jsonContent);
 
