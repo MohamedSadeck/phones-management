@@ -6,8 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:phones_management/models/phone.dart';
-import 'package:phones_management/utils/logger.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:downloadsfolder/downloadsfolder.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';
@@ -44,46 +43,42 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _exportJsonFile(BuildContext context) async {
     try {
-      // Ensure the PermissionHandler plugin is initialized
-      WidgetsFlutterBinding.ensureInitialized();
+      final phoneProvider = Provider.of<PhoneProvider>(context, listen: false);
+      await phoneProvider.loadPhones(); // Ensure phones are loaded
+      final jsonList =
+          phoneProvider.phones.map((phone) => phone.toJson()).toList();
+      final jsonContent = json.encode(jsonList);
 
-      // Request storage permissions
-      if (await Permission.storage.request().isGranted) {
-        final phoneProvider =
-            Provider.of<PhoneProvider>(context, listen: false);
-        await phoneProvider.loadPhones(); // Ensure phones are loaded
-        final jsonList =
-            phoneProvider.phones.map((phone) => phone.toJson()).toList();
-        final jsonContent = json.encode(jsonList);
+      // Get current date for versioning
+      final DateTime now = DateTime.now();
+      final String dateString =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
-        // Get the base external storage directory
-        final Directory? baseDir = await getExternalStorageDirectory();
-        if (baseDir != null) {
-          // Get current date for versioning
-          final DateTime now = DateTime.now();
-          final String dateString =
-              '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final fileName = 'phones_export_$dateString.json';
 
-          final String downloadsPath =
-              '${baseDir.path.split('Android')[0]}Download';
-          final filePath = '$downloadsPath/phones_export_$dateString.json';
-          final file = File(filePath);
-          await file.writeAsString(jsonContent);
+      // Create temporary file first
+      final Directory tempDir = await getTemporaryDirectory();
+      final tempFile = File('${tempDir.path}/$fileName');
+      await tempFile.writeAsString(jsonContent);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Phones exported to: $filePath')),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not access external storage')),
-          );
-        }
+      // Copy to Downloads folder using downloadsfolder package
+      bool? success = await copyFileIntoDownloadFolder(tempFile.path, fileName);
+
+      if (success == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Phones exported to Downloads folder: $fileName')),
+        );
+
+        // Clean up temporary file
+        await tempFile.delete();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Storage permission denied')),
+          const SnackBar(content: Text('Failed to export to Downloads folder')),
         );
       }
     } catch (e) {
+      print(e.toString());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error exporting file: ${e.toString()}')),
       );
@@ -92,7 +87,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final phoneProvider = Provider.of<PhoneProvider>(context);
+    // Use provider from child widgets when needed; no local usage here.
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
